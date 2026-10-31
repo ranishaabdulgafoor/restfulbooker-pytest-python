@@ -1,0 +1,314 @@
+{
+  "info": {
+    "_postman_id": "021b4916-c811-415c-8da8-409db1de84e6",
+    "name": "Restful-Booker API Regression",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58571424"
+  },
+  "item": [
+    {
+      "name": "01_Ping_Server",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 201\", function () \n    {\n        pm.response.to.have.status(201);\n    }\n);\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/ping",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "ping"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "02_Generate_Token",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test 1: Verify the login endpoint processed successfully\npm.test(\"Authentication Successful - Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\n// Action: Parse the response data and save the token dynamically\nvar responseData = pm.response.json();\npm.globals.set(\"adminToken\", responseData.token);\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password123\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/auth",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "auth"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "03_Create_Booking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test 1: Verify the server saved the booking record successfully\npm.test(\"Booking Successfully Created - Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\n// Action: Extract the generated booking ID number and save it globally\nvar responseBody = pm.response.json();\npm.globals.set(\"activeBookingId\", responseBody.bookingid);\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\": \"Alex\",\n    \"lastname\": \"Tester\",\n    \"totalprice\": 250,\n    \"depositpaid\": true,\n    \"bookingdates\": {\n        \"checkin\": \"2030-01-01\",\n        \"checkout\": \"2030-01-10\"\n    },\n    \"additionalneeds\": \"Breakfast\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/booking",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "booking"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "04_Get_Booking",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/booking/{{activeBookingId}}",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "booking",
+            "{{activeBookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05_Update_Booking",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Cookie",
+            "value": "token={{adminToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "",
+            "value": "",
+            "disabled": true
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\": \"Alex\",\n    \"lastname\": \"Tester\",\n    \"totalprice\": 350,\n    \"depositpaid\": true,\n    \"bookingdates\": {\n        \"checkin\": \"2030-01-01\",\n        \"checkout\": \"2030-01-10\"\n    },\n    \"additionalneeds\": \"Dinner\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/booking/{{activeBookingId}}",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "booking",
+            "{{activeBookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "06_Partial_Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test 1: Verify the server processed the partial modification successfully\npm.test(\"Partial Update Confirmed - Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\n// Test 2: Assert data integrity - verify first name changed to Ranisha\nvar responseData = pm.response.json();\npm.test(\"Verify first name updated successfully to Ranisha\", function () {\n    pm.expect(responseData.firstname).to.eql(\"Ranisha\");\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Cookie",
+            "value": "token={{adminToken}}"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\": \"Ranisha\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/booking/{{activeBookingId}}",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "booking",
+            "{{activeBookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "07_Delete_Booking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Test 1: Verify the server processed the deletion successfully\npm.test(\"Deletion Confirmed - Status code is 201\", function () {\n    pm.response.to.have.status(201);\n});\n\n// Test 2: Verify the specific success confirmation string is present\npm.test(\"Response body text matches Created\", function () {\n    pm.response.to.have.body(\"Created\");\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Cookie",
+            "value": "token={{adminToken}}"
+          }
+        ],
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/booking/{{activeBookingId}}",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "booking",
+            "{{activeBookingId}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "08_Ghost_Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Audit Verification - Record is gone from database\", function () {\n    pm.response.to.have.status(404);\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/booking/{{activeBookingId}}",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "booking",
+            "{{activeBookingId}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
